@@ -1,10 +1,13 @@
-const { CostumError } = require('../errors/errors')
+const { StatusCodes } = require("http-status-codes");
+const { CustomError } = require("../errors/errors");
 
 const errorHandler = (err, req, res, next) => {
-    if (err instanceof CostumError) {
-        return res.status(err.statusCode).json({msg:err.message})
-    }
-    return res.status(500).json({msg:"somthing went wrong pls try again later"})
-}
+  if (err instanceof CustomError) {
+    return res.status(err.statusCode).json({ msg: err.message });
+  }
+  return res
+    .status(StatusCodes.INTERNAL_SERVER_ERROR)
+    .json({ msg: "somthing went wrong pls try again later" });
+};
 
-module.exports = errorHandler
+module.exports = errorHandler;

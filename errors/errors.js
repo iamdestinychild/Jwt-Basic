@@ -1,12 +1,7 @@
-class CostumError extends Error{
-    constructor(message, statusCode) {
-        super(message)
-        this.statusCode = statusCode
-    }
+class CustomError extends Error {
+  constructor(message, statusCode) {
+    super(message);
+  }
 }
 
-const createCustomError = (msg, stats) => {
-    return new CostumError(msg, stats)
-}
-
-module.exports = {CostumError, createCustomError}
+module.exports = CustomError;

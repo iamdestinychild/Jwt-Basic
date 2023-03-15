@@ -1,19 +1,36 @@
-const { CostumError, createCustomError} = require('../errors/errors')
+const { CustomError } = require("../errors/errors");
+
+const {BadRequest} = require('../errors/bad-request')
+
+const jwt = require("jsonwebtoken");
 
 const login = async (req, res) => {
-    // checking unfilled area
+  // checking unfilled area
 
-    const { username, password } = req.body
-    
-    if (!username || !password) {
-        throw new CostumError('please provide username and password', 400)
-    }
-    res.send('Fake Login/Register Route')
-}
+  const { username, password } = req.body;
 
-const dashboard =  (req, res) => {
-    const luckyNumber = Math.floor((Math.random() * 100) + 1)
-    res.status(200).json({msg:'Hello john Doe', secret:`Here is your authorized data, your lucky number is ${luckyNumber}`})
-}
+  if (!username || !password) {
+    throw new BadRequest("please provide username and password");
+  }
 
-module.exports = {login, dashboard}
+  const id = Date.now();
+
+  const token = jwt.sign({ id, username }, process.env.JWT_SECRET, {
+    expiresIn: "30d",
+  });
+
+  res.status(200).json({ msg: "user created", token });
+};
+
+const dashboard = (req, res) => {
+  
+    const user = req.user
+    const luckyNumber = Math.floor(Math.random() * 100 + 1);
+    res.status(200).json({
+      msg: `Hello ${user.username}`,
+      secret: `Here is your authorized data, your lucky number is ${luckyNumber}`,
+    });
+  
+};
+
+module.exports = { login, dashboard };
